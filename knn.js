@@ -26,3 +26,44 @@ Node.prototype.measureDistances = function(area_range_obj, rooms_range_obj) {
         neighbor.distance = Math.sqrt( delta_rooms*delta_rooms + delta_area*delta_area );
     }
 };
+Node.prototype.sortByDistance = function() {
+    this.neighbors.sort(function (a, b) {
+        return a.distance - b.distance;
+    });
+};
+Node.prototype.guessType = function(k) {
+    var types = {};
+
+    for (var i in this.neighbors.slice(0, k))
+    {
+        var neighbor = this.neighbors[i];
+
+        if ( ! types[neighbor.type] )
+        {
+            types[neighbor.type] = 0;
+        }
+
+        types[neighbor.type] += 1;
+    }
+
+    var guess = {type: false, count: 0};
+    for (var type in types)
+    {
+        if (types[type] > guess.count)
+        {
+            guess.type = type;
+            guess.count = types[type];
+        }
+    }
+
+    this.guess = guess;
+
+    return types;
+};
+
+
+
+var NodeList = function(k) {
+    this.nodes = [];
+    this.k = k;
+};
